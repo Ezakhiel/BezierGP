@@ -298,6 +298,16 @@
          <string>HYPERBOLOIDAL</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>Bezier - BeforeInter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Bezier - afterInter</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

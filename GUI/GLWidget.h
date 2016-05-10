@@ -75,6 +75,8 @@ public:
     void resizeGL(int w, int h);
     //projekt
     void setControl();
+    void makeMesh();
+    void solveInterpol();
 
 public slots:
     // public event handling methods/slots

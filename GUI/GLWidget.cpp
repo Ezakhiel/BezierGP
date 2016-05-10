@@ -6,6 +6,7 @@
 #include "Core/Constants.h"
 #include "Core/CyclicCurves3.h"
 
+
 using namespace std;
 using namespace cagd;
 
@@ -73,7 +74,7 @@ void GLWidget::initializeGL()
     // init surfaces
 
     _ps.resize(5);
-    _meshes.resize(7);
+    _meshes.resize(8);
 
     //   _surface_index = 0;
     _meshes[0] = new TriangulatedMesh3();
@@ -81,7 +82,7 @@ void GLWidget::initializeGL()
         if ( _meshes[0]->UpdateVertexBufferObjects(GL_DYNAMIC_DRAW))
         {
         _angle = 0.0;
-        _timer->start();
+        //_timer->start();
     }
 
     _meshes[1] = new TriangulatedMesh3();
@@ -119,6 +120,17 @@ void GLWidget::initializeGL()
     _meshes[3] = _ps[1]->GenerateImage(v_point_count,u_point_count,surface_usage_flag);
     _meshes[4] = _ps[2]->GenerateImage(v_point_count,u_point_count,surface_usage_flag);
     _meshes[5] = _ps[3]->GenerateImage(v_point_count,u_point_count,surface_usage_flag);
+
+    //PROJEKT
+
+    this->setControl();
+    this->makeMesh();
+    this->solveInterpol();
+
+    _meshes[6] = beforeinter;
+    //_meshes[7] = afterinter;
+
+    //PROJEKT
 
     if (!_meshes[2]||!_meshes[3]||!_meshes[4]||!_meshes[5])
         cout<<"could not generate mesh"<<endl;
@@ -218,9 +230,6 @@ void GLWidget::initializeGL()
 
 
 
-    // create and store your geometry in display lists or vertex buffer objects
-    // ...
-
 
 }
 
@@ -255,12 +264,23 @@ void GLWidget::paintGL()
         if(dl)
         {
             dl->Enable();
-            MatFBGold.Apply();
+            MatFBRuby.Apply();
             // cout <<"surface_index:"<<_surface_index<<endl;
-
+            if (_surface_index == 8){
+            glEnable(GL_BLEND);
+            glDepthMask(GL_FALSE);
+            glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+            MatFBTurquoise.Apply();
+             _meshes[_surface_index-1]->Render();
+            glDepthMask(GL_TRUE);
+            glDisable(GL_BLEND);
+        }else
             if (_meshes[_surface_index-1])
             {
+
                 _meshes[_surface_index-1]->Render();
+
+
             }
 
             dl->Disable();
@@ -469,3 +489,40 @@ void GLWidget::setControl(){
     patch.SetData(3,2,DCoordinate3(2.0,1.0,0.0));
     patch.SetData(3,3,DCoordinate3(2.0,2.0,0.0));
 }
+
+void GLWidget::makeMesh(){
+    //generate the mesh of the surface patch
+    beforeinter = patch.GenerateImage(30 ,30 ,GL_STATIC_DRAW);
+    if ( beforeinter)
+        beforeinter->UpdateVertexBufferObjects();
+}
+
+void GLWidget::solveInterpol(){
+    //define an interpolation problem:
+    RowMatrix<GLdouble> uKnotVector(4);
+    //1:create a knot vector in u-direction
+    uKnotVector(0) = 0.0;
+    uKnotVector(1) = 1.0 / 3.0;
+    uKnotVector(2) = 2.0 / 3.0;
+    uKnotVector(3) = 1.0;
+    //2:create a knot vector in v-direction
+    ColumnMatrix<GLdouble> vKnotVector(4);
+    vKnotVector(0)=0.0;
+    vKnotVector(1)=1.0/3.0;
+    vKnotVector(2)=2.0/3.0;
+    vKnotVector(3)=1.0;
+    //3:define a matrix of data points, e.g. set them to the original control points
+    Matrix<DCoordinate3> dataPointsToInterpolate(4,4);
+    for (GLuint row = 0;row<4;++row)
+        for (GLuint column = 0;column<4;++column)
+            patch.GetData(row,column,dataPointsToInterpolate(row,column));
+    //4:solve the interpolatio nproblem and generate the mesh of the interpolating patch
+
+    if(patch.UpdateDataForInterpolation(uKnotVector,vKnotVector,dataPointsToInterpolate))
+    {
+        afterinter=patch.GenerateImage(30,30,GL_STATIC_DRAW);
+        if(afterinter)
+            afterinter->UpdateVertexBufferObjects();
+    }
+}
+
