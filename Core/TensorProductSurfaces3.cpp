@@ -18,14 +18,14 @@ GLvoid TensorProductSurface3::PartialDerivatives::LoadNullVectors()
 
 //special constructor
 TensorProductSurface3::TensorProductSurface3(GLdouble u_min, GLdouble u_max, GLdouble v_min, GLdouble v_max, GLuint row_count, GLuint column_count, GLboolean is_closed):
-     _is_closed(is_closed),
-     _vbo_data(0),
-     _u_min(u_min), _u_max(u_max),
-     _v_min(v_min), _v_max(v_max),
-     _data(Matrix<DCoordinate3>(4,4))
+        _is_closed(is_closed),
+        _vbo_data(0),
+        _u_min(u_min), _u_max(u_max),
+        _v_min(v_min), _v_max(v_max),
+        _data(Matrix<DCoordinate3>(4,4))
 {
-//    _data.ResizeRows(row_count);
-//    _data.ResizeColumns(column_count);
+    //    _data.ResizeRows(row_count);
+    //    _data.ResizeColumns(column_count);
 }
 
 // copy constructor
@@ -42,7 +42,7 @@ TensorProductSurface3::TensorProductSurface3(const TensorProductSurface3 &surfac
 
 // assignment operator
 TensorProductSurface3& TensorProductSurface3::operator =(const TensorProductSurface3& surface)
-{
+                                                        {
     if (this!=&surface)
     {
         DeleteVertexBufferObjectsOfData();
@@ -265,8 +265,12 @@ GLboolean TensorProductSurface3::UpdateDataForInterpolation(const RowMatrix<GLdo
         u_collocation_matrix.SetRow(i, u_blending_values);
     }
 
+    cout << u_collocation_matrix << endl;
+
+    cout << "test" << endl;
     if (!u_collocation_matrix.PerformLUDecomposition())
         return GL_FALSE;
+
 
     // 2: calculate the v-collocation matrix and perform LU-decomposition on it
     RowMatrix<GLdouble> v_blending_values;
@@ -281,7 +285,7 @@ GLboolean TensorProductSurface3::UpdateDataForInterpolation(const RowMatrix<GLdo
     }
 
     if (!v_collocation_matrix.PerformLUDecomposition())
-            return GL_FALSE;
+        return GL_FALSE;
 
     // 3:   for all fixed j in {0, 1,..., column_count} determine control points
     //
@@ -339,4 +343,36 @@ TensorProductSurface3::~TensorProductSurface3()
 {
     DeleteVertexBufferObjectsOfData();
 }
+
+Matrix<DCoordinate3> TensorProductSurface3::GetData(){
+    return _data;
+}
+/* TODO
+template <typename T>
+        RowMatrix<T*>* TensorProductSurface3::GenerateUIsoparametricLines(GLuint fixed_v_count, GLuint u_div_point_count, GLenum usage_flag = GL_STATIC_DRAW) const{
+    // PartialDerivatives pd; CalculatePartialDerivatives(u_i, v_fixed, pd);
+    // pd.point, pd.diff1u
+    PartialDerivatives pd;
+
+    if (u_div_point_count <= 1 || fixed_v_count <= 1)
+        return GL_FALSE;
+
+    GLdouble du = (_u_max - _u_min) / (u_div_point_count - 1);
+    GLdouble dv = (_v_max - _v_min) / (fixed_v_count - 1);
+
+    // uniform subdivision grid in the unit square
+    GLfloat sdu = 1.0f / (u_div_point_count - 1);
+    GLfloat tdv = 1.0f / (fixed_v_count - 1);
+/*
+    for (int i=0; i< fixed_v_count; ++i)
+    {
+        u = _umin
+        for (int j=0;j < u_div_point_count; ++j)
+        {
+            // CalculatePartialDerivatives(i,)
+
+        }
+    }
+}
+*/
 

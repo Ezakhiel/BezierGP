@@ -1,4 +1,7 @@
 #include "BicubicBezierPatch.h"
+#include <iostream>
+
+using namespace std;
 
 using namespace cagd;
 
@@ -13,7 +16,7 @@ GLboolean BicubicBezierPatch::UBlendingFunctionValues(
     if (u_knot < 0.0 || u_knot > 1.0)
         return GL_FALSE;
 
-    blending_values.ResizeRows(4);
+    blending_values.ResizeColumns(4);
 
     GLdouble u = u_knot , u2 = u * u , u3 = u2 * u , w = 1.0 - u , w2 = w * w, w3 = w2 * w;
 
@@ -21,6 +24,8 @@ GLboolean BicubicBezierPatch::UBlendingFunctionValues(
     blending_values(1) = 3.0 * w2 * u;
     blending_values(2) = 3.0 * w * u2;
     blending_values(3) = u3;
+
+
 
     return GL_TRUE;
 }
@@ -31,7 +36,7 @@ GLboolean BicubicBezierPatch::VBlendingFunctionValues(
     if (v_knot < 0.0 || v_knot > 1.0)
         return GL_FALSE;
 
-    blending_values.ResizeRows(4);
+    blending_values.ResizeColumns(4);
 
     GLdouble v = v_knot, v2 = v * v, v3 = v2 * v , w = 1.0 - v, w2 = w * w, w3 = w2 * w;
 
@@ -39,6 +44,8 @@ GLboolean BicubicBezierPatch::VBlendingFunctionValues(
     blending_values(1) = 3.0 * w2 * v;
     blending_values(2) = 3.0 * w * v2;
     blending_values(3) = v3;
+
+    cout << blending_values << endl;
 
     return GL_TRUE;
 }

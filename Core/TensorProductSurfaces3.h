@@ -6,6 +6,7 @@
 #include "Matrices.h"
 #include "TriangulatedMeshes3.h"
 #include <vector>
+#include "GenericCurves3.h"
 
 namespace cagd
 {
@@ -99,6 +100,13 @@ namespace cagd
         virtual GLvoid    DeleteVertexBufferObjectsOfData();
         virtual GLboolean RenderData(GLenum render_mode = GL_LINE_STRIP) const;
         virtual GLboolean UpdateVertexBufferObjectsOfData(GLenum usage_flag = GL_STATIC_DRAW);
+
+        //PROJECT
+        Matrix<DCoordinate3> GetData();
+        RowMatrix<GenericCurve3*>* GenerateUIsoparametricLines(GLuint fixed_v_count, GLuint u_div_point_count, GLenum usage_flag = GL_STATIC_DRAW) const;
+        RowMatrix<GenericCurve3*>* GenerateVIsoparametricLines(GLuint fixed_u_count, GLuint v_div_point_count, GLenum usage_flag = GL_STATIC_DRAW) const;
+        // PartialDerivatives pd; CalculatePartialDerivatives(u_i, v_fixed, pd);
+        // pd.point, pd.diff1u
 
         // destructor
         virtual ~TensorProductSurface3();

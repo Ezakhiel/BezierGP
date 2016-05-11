@@ -128,7 +128,7 @@ void GLWidget::initializeGL()
     this->solveInterpol();
 
     _meshes[6] = beforeinter;
-    //_meshes[7] = afterinter;
+    _meshes[7] = afterinter;
 
     //PROJEKT
 
@@ -266,26 +266,37 @@ void GLWidget::paintGL()
             dl->Enable();
             MatFBRuby.Apply();
             // cout <<"surface_index:"<<_surface_index<<endl;
-            if (_surface_index == 8){
-            glEnable(GL_BLEND);
-            glDepthMask(GL_FALSE);
-            glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-            MatFBTurquoise.Apply();
-             _meshes[_surface_index-1]->Render();
-            glDepthMask(GL_TRUE);
-            glDisable(GL_BLEND);
-        }else
-            if (_meshes[_surface_index-1])
-            {
-
-                _meshes[_surface_index-1]->Render();
-
-
-            }
-
-            dl->Disable();
         }
+
+        if (_meshes[_surface_index-1])
+        {
+            if (_surface_index >= 7)
+            {
+                cout<<_surface_index<<endl;
+                if (beforeinter)
+                {
+                    beforeinter->Render();
+                }
+                if (afterinter){
+                    cout<<"control print"<<endl;
+                    glEnable(GL_BLEND);
+                    glDepthMask(GL_FALSE);
+                    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+                    MatFBTurquoise.Apply();
+                    afterinter->Render();
+                    glDepthMask(GL_TRUE);
+                    glDisable(GL_BLEND);
+                }
+            }
+            else{
+                _meshes[_surface_index-1]->Render();
+            }
+        }
+        dl->Disable();
     }
+
+
+
 
 
     //freetheallocatedmemoryofthelightsource
@@ -519,13 +530,18 @@ void GLWidget::solveInterpol(){
     for (GLuint row = 0;row<4;++row)
         for (GLuint column = 0;column<4;++column)
             patch.GetData(row,column,dataPointsToInterpolate(row,column));
+
+    cout << dataPointsToInterpolate << endl;
     //4:solve the interpolatio nproblem and generate the mesh of the interpolating patch
 
     if(patch.UpdateDataForInterpolation(uKnotVector,vKnotVector,dataPointsToInterpolate))
     {
+        cout<<"updatel!!!"<<endl;
         afterinter=patch.GenerateImage(30,30,GL_STATIC_DRAW);
         if(afterinter)
             afterinter->UpdateVertexBufferObjects();
+    }else{
+        cout<<"COULD not update"<<endl;
     }
 }
 
