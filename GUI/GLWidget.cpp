@@ -472,18 +472,21 @@ void GLWidget::setSurfaceIndex(int index)
 
 void GLWidget::setControl(){
     //define the controlnet of the bicubic Bezier patch
-    patch.SetData(0,0,DCoordinate3(-2.0,2.0,0.0));
+    patch.SetData(0,0,DCoordinate3(-2.0,-2.0,0.0));
     patch.SetData(0,1,DCoordinate3(-2.0,-1.0,0.0));
     patch.SetData(0,2,DCoordinate3(-2.0,1.0,0.0));
     patch.SetData(0,3,DCoordinate3(-2.0,2.0,0.0));
+
     patch.SetData(1,0,DCoordinate3(-1.0,-2.0,0.0));
     patch.SetData(1,1,DCoordinate3(-1.0,-1.0,2.0));
     patch.SetData(1,2,DCoordinate3(-1.0,1.0,2.0));
     patch.SetData(1,3,DCoordinate3(-1.0,2.0,0.0));
+
     patch.SetData(2,0,DCoordinate3(1.0,-2.0,0.0));
     patch.SetData(2,1,DCoordinate3(1.0,-1.0,2.0));
     patch.SetData(2,2,DCoordinate3(1.0,1.0,2.0));
     patch.SetData(2,3,DCoordinate3(1.0,2.0,0.0));
+
     patch.SetData(3,0,DCoordinate3(2.0,-2.0,0.0));
     patch.SetData(3,1,DCoordinate3(2.0,-1.0,0.0));
     patch.SetData(3,2,DCoordinate3(2.0,1.0,0.0));

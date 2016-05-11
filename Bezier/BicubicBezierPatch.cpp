@@ -2,7 +2,7 @@
 
 using namespace cagd;
 
-BicubicBezierPatch::BicubicBezierPatch(): TensorProductSurface3(0.0, 1.0, 0.0, 4, 4)
+BicubicBezierPatch::BicubicBezierPatch(): TensorProductSurface3(0.0, 1.0, 0.0, 1.0, 4, 4)
 {
 
 }
@@ -56,7 +56,7 @@ GLboolean BicubicBezierPatch::CalculatePartialDerivatives(
     u_blending_values(0)=wu3;
     u_blending_values(1)=3.0 * wu2 * u;
     u_blending_values(2)=3.0 * wu *u2;
-    u_blending_values(3)=wu3;
+    u_blending_values(3)=u3;
 
     d1_u_blending_values(0) = -3.0 * wu2;
     d1_u_blending_values(1) = -6.0 * wu * u + 3.0 * wu2;
@@ -70,7 +70,7 @@ GLboolean BicubicBezierPatch::CalculatePartialDerivatives(
     v_blending_values(0) = wv3;
     v_blending_values(1) = 3.0 * wv2 * v;
     v_blending_values(2) = 3.0 * wv *v2;
-    v_blending_values(3) = wv3;
+    v_blending_values(3) = v3;
 
     d1_v_blending_values(0) = -3.0 * wv2;
     d1_v_blending_values(1) = -6.0 * wv * v + 3.0 * wv2;
@@ -86,7 +86,7 @@ GLboolean BicubicBezierPatch::CalculatePartialDerivatives(
             aux_d0_v += _data(row, column) * v_blending_values(column);
             aux_d1_v += _data(row, column) * d1_v_blending_values(column);
         }
-        pd.point += aux_d0_v * u_blending_values(row);
+        pd.point  += aux_d0_v * u_blending_values(row);
         pd.diff1u += aux_d0_v * d1_u_blending_values(row);
         pd.diff1v += aux_d1_v * u_blending_values(row);
     }
