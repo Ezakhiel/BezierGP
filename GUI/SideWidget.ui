@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>294</width>
-    <height>384</height>
+    <height>487</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,7 +31,7 @@
      <x>10</x>
      <y>0</y>
      <width>271</width>
-     <height>351</height>
+     <height>471</height>
     </rect>
    </property>
    <property name="title">
@@ -43,7 +43,7 @@
       <x>3</x>
       <y>21</y>
       <width>261</width>
-      <height>321</height>
+      <height>448</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -308,6 +308,76 @@
          <string>Bezier - afterInter</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QCheckBox" name="iso_der_u_check">
+       <property name="text">
+        <string>Iso Deriv U</string>
+       </property>
+      </widget>
+     </item>
+     <item row="12" column="1">
+      <widget class="QCheckBox" name="iso_der_v_check">
+       <property name="text">
+        <string>Iso Deriv V</string>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="0">
+      <widget class="QSlider" name="div_u_slider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="13" column="1">
+      <widget class="QCheckBox" name="iso_u_check">
+       <property name="text">
+        <string>Iso U</string>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="0">
+      <widget class="QSlider" name="div_v_slider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="14" column="1">
+      <widget class="QCheckBox" name="iso_v_check">
+       <property name="text">
+        <string>Iso V</string>
+       </property>
+      </widget>
+     </item>
+     <item row="15" column="1">
+      <widget class="QCheckBox" name="derivativesCheck">
+       <property name="text">
+        <string>Derivatives</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QCheckBox" name="t_extend_btn">
+       <property name="text">
+        <string>TOP</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1">
+      <widget class="QCheckBox" name="r_extend_btn">
+       <property name="text">
+        <string>RIGHT</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QCheckBox" name="b_extend_btn">
+       <property name="text">
+        <string>BOTTOM</string>
+       </property>
       </widget>
      </item>
     </layout>

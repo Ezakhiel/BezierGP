@@ -50,6 +50,22 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     connect(_side_widget->comboBox, SIGNAL(currentIndexChanged(int)), _gl_widget, SLOT(setCurveIndex(int)));
     connect(_side_widget->surfaceComboBox, SIGNAL(currentIndexChanged(int)), _gl_widget, SLOT(setSurfaceIndex(int)));
 
+	//project stuff
+
+    connect(_side_widget->derivativesCheck, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_derivatives(bool)));
+    connect(_side_widget->t_extend_btn, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_t(bool)));
+    connect(_side_widget->r_extend_btn, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_r(bool)));
+    connect(_side_widget->b_extend_btn, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_b(bool)));
+    
+    connect(_side_widget->div_u_slider, SIGNAL(valueChanged(int)), _gl_widget, SLOT(set_iso_u_div_count(int)));
+    connect(_side_widget->div_v_slider, SIGNAL(valueChanged(int)), _gl_widget, SLOT(set_iso_v_div_count(int)));
+
+    connect(_side_widget->iso_u_check, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_iso_u(bool)));
+    connect(_side_widget->iso_v_check, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_iso_v(bool)));
+
+    connect(_side_widget->iso_der_u_check, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_iso_u_der(bool)));
+    connect(_side_widget->iso_der_v_check, SIGNAL(toggled(bool)), _gl_widget, SLOT(toggle_iso_v_der(bool)));
+
 
 }
 

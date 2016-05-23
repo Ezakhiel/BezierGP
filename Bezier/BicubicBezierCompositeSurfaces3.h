@@ -1,4 +1,5 @@
 #include "BicubicBezierPatch.h"
+#include "BicubicBezierIsoLine.h"
 #include "../core/Materials.h"
 #include "../Shader/ShaderPrograms.h"
 #include "../core/GenericCurves3.h"
@@ -14,22 +15,9 @@ namespace cagd
             TriangulatedMesh3* mesh;
             Material *material;
             ShaderProgram *shader;
-            RowMatrix<GenericCurve3*> *u_isoLines;
-            RowMatrix<GenericCurve3*> *v_isoLines;
+            RowMatrix<BicubicBezierIsoLine*> *u_isoLines;
+            RowMatrix<BicubicBezierIsoLine*> *v_isoLines;
             RowMatrix<BicubicBezierPatch*> neighbors; // 8 elem
-            PatchAttributes& operator =(const PatchAttributes& pa){
-                if (this!=&pa)
-                {
-                    patch = pa.patch;
-                    mesh = pa.mesh;
-                    material = pa.material;
-                    shader = pa.shader;
-                    u_isoLines = pa.u_isoLines;
-                    v_isoLines = pa.v_isoLines;
-                    neighbors = pa.neighbors;
-                }
-                return *this;
-            }
             PatchAttributes(): patch(0), mesh(0),material(0),shader(0),u_isoLines(0),v_isoLines(0),
                 neighbors(RowMatrix<BicubicBezierPatch*>(8))
             {}

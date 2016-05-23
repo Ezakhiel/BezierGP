@@ -1,4 +1,7 @@
 #include "GLWidget.h"
+#include "extenddialog.h"
+#include <QMessageBox>
+#include <QToolButton>
 #include <iostream>
 #include "Core/Matrices.h"
 #include "Test/TestFunctions.h"
@@ -123,13 +126,13 @@ void GLWidget::initializeGL()
 
     //PROJEKT
 
-    this->setControl();
-    this->makeMesh();
-    this->solveInterpol();
+    setControl();
+    makeMesh();
+    solveInterpol();
 
-    _meshes[6] = beforeinter;
-    _meshes[7] = afterinter;
-
+    //_meshes[6] = beforeinter;
+    //  _meshes[7] = afterinter;
+    cout<<"Patch mesh made."<<endl;
     //PROJEKT
 
     if (!_meshes[2]||!_meshes[3]||!_meshes[4]||!_meshes[5])
@@ -193,7 +196,6 @@ void GLWidget::initializeGL()
     cc->UpdateVertexBufferObjectsOfData(GL_STATIC_DRAW);
     //    cc->RenderData(GL_LINE_LOOP);
 
-
     //init curve images
     GLuint div_point_count = 200;
     GLenum usage_flag = GL_STATIC_DRAW;
@@ -229,7 +231,7 @@ void GLWidget::initializeGL()
     }
 
 
-
+    cout<<"INIT phase finished"<<endl;
 
 }
 
@@ -264,44 +266,126 @@ void GLWidget::paintGL()
         if(dl)
         {
             dl->Enable();
-            MatFBRuby.Apply();
             // cout <<"surface_index:"<<_surface_index<<endl;
-        }
+        }	
+        if (_surface_index >= 7)
+        {
+            cout<<_surface_index<<endl;
+            if (beforeinter)
+            {
+                cout<<"Making Patch"<<endl;
 
+                MatFBRuby.Apply();
+                beforeinter->Render();
+                MatFBSilver.Apply();
+
+                if (_t_enabled)
+                    _t_mesh->Render();
+                if (_r_enabled)
+                    _r_mesh->Render();
+                if (_b_enabled)
+                    _b_mesh->Render();
+				
+                MatFBEmerald.Apply();
+                patch.RenderUIsoLines(0);
+                if(patch.GetT())
+                    patch.GetT()->RenderUIsoLines(0);
+                if(patch.GetR())
+                    patch.GetR()->RenderUIsoLines(0);
+                if(patch.GetB())
+                    patch.GetB()->RenderUIsoLines(0);
+
+            }/*
+            if (afterinter){
+                cout<<"control print"<<endl;
+
+                glEnable(GL_BLEND);
+                glDepthMask(GL_FALSE);
+                glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+                MatFBTurquoise.Apply();
+                afterinter->Render();
+                glDepthMask(GL_TRUE);
+                glDisable(GL_BLEND);
+			}
+			*/
+			if (_show_u_iso_lines)
+            {
+                patch.RenderUIsoLines(0);
+                if (_t_enabled)
+                    patch.GetT()->RenderUIsoLines(0);
+                if (_r_enabled)
+                    patch.GetR()->RenderUIsoLines(0);
+                if (_b_enabled)
+                    patch.GetB()->RenderUIsoLines(0);
+            }
+
+            //rendering v_iso_lines
+            if (_show_v_iso_lines)
+            {
+                patch.RenderVIsoLines(0);
+                if (_t_enabled)
+                    patch.GetT()->RenderVIsoLines(0);
+                if (_r_enabled)
+                    patch.GetR()->RenderVIsoLines(0);
+                if (_b_enabled)
+                    patch.GetB()->RenderVIsoLines(0);
+            }
+
+            MatFBBrass.Apply();
+
+            if (_show_u_iso_derivates)
+            {
+                patch.RenderUIsoLines(1);
+                if (_t_enabled)
+                    patch.GetT()->RenderUIsoLines(1);
+                if (_r_enabled)
+                    patch.GetR()->RenderUIsoLines(1);
+                if (_b_enabled)
+                    patch.GetB()->RenderUIsoLines(1);
+            }
+
+            MatFBGold.Apply();
+
+            if (_show_v_iso_derivates)
+            {
+                patch.RenderVIsoLines(1);
+                if (_t_enabled)
+                    patch.GetT()->RenderVIsoLines(1);
+                if (_r_enabled)
+                    patch.GetR()->RenderVIsoLines(1);
+                if (_b_enabled)
+                    patch.GetB()->RenderVIsoLines(1);
+            }
+
+            // rendering derivatives
+            if (_show_derivatives)
+            {
+
+                glDisable(GL_LIGHTING);
+                patch.RenderDerivatives();
+
+                if (_t_enabled)
+                    patch.GetT()->RenderDerivatives();
+                if (_r_enabled)
+                    patch.GetR()->RenderDerivatives();
+                if (_b_enabled)
+                    patch.GetB()->RenderDerivatives();
+
+                glEnable(GL_LIGHTING);
+            }
+
+        }
         if (_meshes[_surface_index-1])
         {
-            if (_surface_index >= 7)
-            {
-                cout<<_surface_index<<endl;
-                if (beforeinter)
-                {
-                    beforeinter->Render();
-                }
-                if (afterinter){
-                    cout<<"control print"<<endl;
-                    glEnable(GL_BLEND);
-                    glDepthMask(GL_FALSE);
-                    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-                    MatFBTurquoise.Apply();
-                    afterinter->Render();
-                    glDepthMask(GL_TRUE);
-                    glDisable(GL_BLEND);
-                }
-            }
-            else{
-                _meshes[_surface_index-1]->Render();
-            }
+            _meshes[_surface_index-1]->Render();
         }
         dl->Disable();
+
     }
 
 
 
-
-
-    //freetheallocatedmemoryofthelightsource
-
-    // render your geometry
+    // render your 2D geometry
     if (_curve_index > 0)
     {
         glDisable(GL_LIGHTING);
@@ -335,19 +419,6 @@ void GLWidget::paintGL()
     }
 
 
-    /*  glBegin(GL_TRIANGLES);
-            glColor3f(1.0, 0.0, 0.0);
-            glVertex3f(1.0, 0.0, 0.0);
-
-            glColor3f(0.0, 1.0, 0.0);
-            glVertex3f(0.0, 1.0, 0.0);
-
-            glColor3f(0.0, 0.0, 1.0);
-            glVertex3f(0.0, 0.0, 1.0);
-        glEnd();*/
-
-    // pops the current matrix stack, replacing the current matrix with the one below it on the stack,
-    // i.e., the original model view matrix is restored
     glPopMatrix();
 }
 
@@ -502,13 +573,22 @@ void GLWidget::setControl(){
     patch.SetData(3,1,DCoordinate3(2.0,-1.0,0.0));
     patch.SetData(3,2,DCoordinate3(2.0,1.0,0.0));
     patch.SetData(3,3,DCoordinate3(2.0,2.0,0.0));
+
+    patch.UpdateVertexBufferObjectsOfDerivatives();
 }
 
 void GLWidget::makeMesh(){
-    //generate the mesh of the surface patch
+    //generate the mesh of the surface patch and isolines
+    //initialize u_iso_lines
+    patch.GenerateUIsoLines(_u_isoline_count, 30);
+
+    //initialize v_iso_lines
+    patch.GenerateVIsoLines(_v_isoline_count, 30);
     beforeinter = patch.GenerateImage(30 ,30 ,GL_STATIC_DRAW);
-    if ( beforeinter)
+    if ( beforeinter){
+        cout<<"UpdatingVBO."<<endl;
         beforeinter->UpdateVertexBufferObjects();
+    }
 }
 
 void GLWidget::solveInterpol(){
@@ -525,6 +605,8 @@ void GLWidget::solveInterpol(){
     vKnotVector(1)=1.0/3.0;
     vKnotVector(2)=2.0/3.0;
     vKnotVector(3)=1.0;
+    cout<<"v-u knotvektor filled"<<endl;
+
     //3:define a matrix of data points, e.g. set them to the original control points
     Matrix<DCoordinate3> dataPointsToInterpolate(4,4);
     for (GLuint row = 0;row<4;++row)
@@ -543,5 +625,247 @@ void GLWidget::solveInterpol(){
     }else{
         cout<<"COULD not update"<<endl;
     }
+
 }
 
+void GLWidget::toggle_derivatives(bool enabled)
+{
+    _show_derivatives = enabled;
+    repaint();
+}
+
+void GLWidget::toggle_t(bool checked)
+{
+    cout<<"Adding top patch."<<endl;
+    if (checked)
+    {
+        DCoordinate3 d_00, d_01, d_02, d_03,
+                d_10, d_11, d_12, d_13,
+                d_20, d_21, d_22, d_23,
+                d_30, d_31, d_32, d_33;
+
+
+        patch.GetData(0, 0, d_10);
+        patch.GetData(0, 1, d_11);
+        patch.GetData(0, 2, d_12);
+        patch.GetData(0, 3, d_13);
+
+        patch.GetData(2, 0, d_30);
+        patch.GetData(2, 1, d_31);
+        patch.GetData(2, 2, d_32);
+        patch.GetData(2, 3, d_33);
+
+
+        ExtendDialog *dialog = new ExtendDialog(
+                    d_00, d_01, d_02, d_03,
+                    d_10, d_11, d_12, d_13,
+                    d_20, d_21, d_22, d_23,
+                    d_30, d_31, d_32, d_33);
+
+        dialog->setup_t();
+
+        if (dialog->exec() == QDialog::Accepted)
+        {
+            Matrix<DCoordinate3> m = dialog->getData();
+            patch.ExtendT(m);
+
+            BicubicBezierPatch* t = patch.GetT();
+
+            t->UpdateVertexBufferObjectsOfDerivatives();
+            t->GenerateUIsoLines(_u_isoline_count, 30);
+            t->GenerateVIsoLines(_v_isoline_count, 30);
+            _t_mesh = t->GenerateImage(30, 30, GL_STATIC_DRAW);
+            _t_mesh->UpdateVertexBufferObjects();
+            _t_enabled = true;
+            repaint();
+        }
+        else
+        {
+            dynamic_cast<QToolButton*>(sender())->setChecked(false);
+        }
+    }
+    else
+    {
+        if (_t_enabled)
+        {
+            _t_mesh->DeleteVertexBufferObjects();
+            delete _t_mesh;
+            patch.DeleteT();
+            _t_enabled = false;
+            repaint();
+        }
+    }
+}
+
+void GLWidget::toggle_r(bool checked)
+{
+    if (checked)
+    {
+        DCoordinate3 d_00, d_01, d_02, d_03,
+                d_10, d_11, d_12, d_13,
+                d_20, d_21, d_22, d_23,
+                d_30, d_31, d_32, d_33;
+
+
+        patch.GetData(0, 1, d_00);
+        patch.GetData(0, 3, d_02);
+        patch.GetData(2, 1, d_20);
+        patch.GetData(2, 3, d_22);
+
+        patch.GetData(1, 1, d_10);
+        patch.GetData(1, 3, d_12);
+        patch.GetData(3, 1, d_30);
+        patch.GetData(3, 3, d_32);
+
+
+        ExtendDialog *dialog = new ExtendDialog(
+                    d_00, d_01, d_02, d_03,
+                    d_10, d_11, d_12, d_13,
+                    d_20, d_21, d_22, d_23,
+                    d_30, d_31, d_32, d_33);
+
+        dialog->setup_r();
+
+        if (dialog->exec() == QDialog::Accepted)
+        {
+            Matrix<DCoordinate3> m = dialog->getData();
+            patch.ExtendR(m);
+
+            BicubicBezierPatch* r = patch.GetR();
+
+            r->UpdateVertexBufferObjectsOfDerivatives();
+            r->GenerateUIsoLines(_u_isoline_count, 30);
+            r->GenerateVIsoLines(_v_isoline_count, 30);
+            _r_mesh = r->GenerateImage(30, 30, GL_STATIC_DRAW);
+            _r_mesh->UpdateVertexBufferObjects();
+            _r_enabled = true;
+            repaint();
+        }
+        else
+        {
+            dynamic_cast<QToolButton*>(sender())->setChecked(false);
+        }
+    }
+    else
+    {
+        if (_r_enabled)
+        {
+            _r_mesh->DeleteVertexBufferObjects();
+            delete _r_mesh;
+            patch.DeleteR();
+            _r_enabled = false;
+            repaint();
+        }
+    }
+}
+
+void GLWidget::toggle_b(bool checked)
+{
+    if (checked)
+    {
+        DCoordinate3 d_00, d_01, d_02, d_03,
+                d_10, d_11, d_12, d_13,
+                d_20, d_21, d_22, d_23,
+                d_30, d_31, d_32, d_33;
+
+        patch.GetData(1, 0, d_00);
+        patch.GetData(1, 2, d_02);
+        patch.GetData(3, 0, d_20);
+        patch.GetData(3, 2, d_22);
+
+        patch.GetData(1, 1, d_01);
+        patch.GetData(1, 3, d_03);
+        patch.GetData(3, 1, d_21);
+        patch.GetData(3, 3, d_23);
+
+
+        ExtendDialog *dialog = new ExtendDialog(
+                    d_00, d_01, d_02, d_03,
+                    d_10, d_11, d_12, d_13,
+                    d_20, d_21, d_22, d_23,
+                    d_30, d_31, d_32, d_33);
+
+        dialog->setup_b();
+
+        if (dialog->exec() == QDialog::Accepted)
+        {
+            Matrix<DCoordinate3> m = dialog->getData();
+            patch.ExtendB(m);
+
+            BicubicBezierPatch* b = patch.GetB();
+
+            b->UpdateVertexBufferObjectsOfDerivatives();
+            b->GenerateUIsoLines(_u_isoline_count, 30);
+            b->GenerateVIsoLines(_v_isoline_count, 30);
+            _b_mesh = b->GenerateImage(30, 30, GL_STATIC_DRAW);
+            _b_mesh->UpdateVertexBufferObjects();
+            _b_enabled = true;
+            repaint();
+        }
+        else
+        {
+            dynamic_cast<QToolButton*>(sender())->setChecked(false);
+        }
+    }
+    else
+    {
+        if (_b_enabled)
+        {
+            _b_mesh->DeleteVertexBufferObjects();
+            delete _b_mesh;
+            patch.DeleteB();
+            _b_enabled = false;
+            repaint();
+        }
+    }
+}
+
+void GLWidget::toggle_iso_u(bool checked)
+{
+    _show_u_iso_lines = checked;
+    repaint();
+}
+void GLWidget::toggle_iso_v(bool checked)
+{
+    _show_v_iso_lines = checked;
+    repaint();
+}
+
+void GLWidget::set_iso_u_div_count(int value)
+{
+    _u_isoline_count = value;
+    patch.GenerateUIsoLines(_u_isoline_count, 30);
+    if (_t_enabled)
+        patch.GetT()->GenerateUIsoLines(_u_isoline_count, 30);
+    if (_r_enabled)
+        patch.GetR()->GenerateUIsoLines(_u_isoline_count, 30);
+
+    if (_b_enabled)
+        patch.GetB()->GenerateUIsoLines(_u_isoline_count, 30);
+    repaint();
+}
+
+void GLWidget::set_iso_v_div_count(int value)
+{
+    _v_isoline_count = value;
+    patch.GenerateVIsoLines(_v_isoline_count, 30);
+    if (_t_enabled)
+        patch.GetT()->GenerateVIsoLines(_v_isoline_count, 30);
+    if (_r_enabled)
+        patch.GetR()->GenerateVIsoLines(_v_isoline_count, 30);
+    if (_b_enabled)
+        patch.GetB()->GenerateVIsoLines(_v_isoline_count, 30);
+    repaint();
+}
+
+void GLWidget::toggle_iso_u_der(bool checked)
+{
+    _show_u_iso_derivates = checked;
+    repaint();
+}
+
+void GLWidget::toggle_iso_v_der(bool checked)
+{
+    _show_v_iso_derivates = checked;
+    repaint();
+}

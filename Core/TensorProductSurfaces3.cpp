@@ -347,7 +347,7 @@ TensorProductSurface3::~TensorProductSurface3()
 Matrix<DCoordinate3> TensorProductSurface3::GetData(){
     return _data;
 }
-/* TODO
+/*
 template <typename T>
         RowMatrix<T*>* TensorProductSurface3::GenerateUIsoparametricLines(GLuint fixed_v_count, GLuint u_div_point_count, GLenum usage_flag = GL_STATIC_DRAW) const{
     // PartialDerivatives pd; CalculatePartialDerivatives(u_i, v_fixed, pd);
@@ -363,13 +363,17 @@ template <typename T>
     // uniform subdivision grid in the unit square
     GLfloat sdu = 1.0f / (u_div_point_count - 1);
     GLfloat tdv = 1.0f / (fixed_v_count - 1);
-/*
+
     for (int i=0; i< fixed_v_count; ++i)
     {
-        u = _umin
+        GLdouble v = _v_min + i * dv;
+        GLfloat t = i * tdv;
         for (int j=0;j < u_div_point_count; ++j)
         {
-            // CalculatePartialDerivatives(i,)
+            GLdouble u = _u_min + j * du;
+            GLfloat s  = j * sdu;
+
+
 
         }
     }

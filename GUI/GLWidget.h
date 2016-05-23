@@ -17,6 +17,7 @@
 #include "../Core/HCoordinates3.h"
 #include "../Core/CyclicCurves3.h"
 #include "../Bezier/BicubicBezierPatch.h"
+#include "../Bezier/BicubicBezierIsoLine.h"
 
 class GLWidget: public QGLWidget
 {
@@ -56,10 +57,25 @@ private:
     // a bicubic Bezier patches
     cagd::BicubicBezierPatch patch;
     // t r i a n g u l a t e d meshes
+	bool    _show_derivatives;
     cagd::TriangulatedMesh3* beforeinter, *afterinter;
+	
+	cagd::TriangulatedMesh3 *_t_mesh;
+	cagd::TriangulatedMesh3 *_r_mesh;
+	cagd::TriangulatedMesh3 *_b_mesh;
+	
+	
+	GLuint _u_isoline_count;
+    GLuint _v_isoline_count;
 
-
-    //[roject end
+    bool    _t_enabled;
+    bool    _r_enabled;
+    bool    _b_enabled;
+    bool    _show_u_iso_lines;
+    bool    _show_v_iso_lines;
+    bool    _show_u_iso_derivates;
+    bool    _show_v_iso_derivates;
+    //project end
 
 private slots:
     void _animate();
@@ -90,4 +106,19 @@ public slots:
     void set_trans_x(double value);
     void set_trans_y(double value);
     void set_trans_z(double value);
+	
+    void toggle_t(bool checked);
+    void toggle_r(bool checked);
+    void toggle_b(bool checked);
+	
+    void toggle_derivatives(bool enabled);
+	
+	void toggle_iso_u(bool checked);
+    void toggle_iso_v(bool checked);
+
+    void set_iso_u_div_count(int value);
+    void set_iso_v_div_count(int value);
+
+    void toggle_iso_u_der(bool checked);
+    void toggle_iso_v_der(bool checked);
 };

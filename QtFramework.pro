@@ -16,7 +16,8 @@ SOURCES += \
     Core/TensorProductSurfaces3.cpp \
     Bezier/BicubicBezierPatch.cpp \
     Shader/ShaderPrograms.cpp \
-    Bezier/BicubicBezierCompositeSurfaces3.cpp
+    Bezier/BicubicBezierIsoLine.cpp \
+    GUI/extenddialog.cpp
 
 HEADERS += \
     GUI/MainWindow.h \
@@ -42,12 +43,14 @@ HEADERS += \
     Parametric/ParametricSurfaces3.h \
     Core/TensorProductSurfaces3.h \
     Bezier/BicubicBezierPatch.h \
-    Bezier/BicubicBezierCompositeSurfaces3.h \
-    Shader/ShaderPrograms.h
+    Shader/ShaderPrograms.h \
+    Bezier/BicubicBezierIsoLine.h \
+    GUI/extenddialog.h
 
 FORMS += \
     GUI/MainWindow.ui \
     GUI/SideWidget.ui \
+    GUI/extenddialog.ui
 
 QT += opengl
 
