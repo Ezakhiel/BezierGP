@@ -113,7 +113,7 @@ public slots:
 	
     void toggle_derivatives(bool enabled);
 	
-	void toggle_iso_u(bool checked);
+    void toggle_iso_u(bool checked);
     void toggle_iso_v(bool checked);
 
     void set_iso_u_div_count(int value);

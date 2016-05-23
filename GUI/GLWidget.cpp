@@ -132,7 +132,6 @@ void GLWidget::initializeGL()
 
     //_meshes[6] = beforeinter;
     //  _meshes[7] = afterinter;
-    cout<<"Patch mesh made."<<endl;
     //PROJEKT
 
     if (!_meshes[2]||!_meshes[3]||!_meshes[4]||!_meshes[5])
@@ -270,11 +269,8 @@ void GLWidget::paintGL()
         }	
         if (_surface_index >= 7)
         {
-            cout<<_surface_index<<endl;
             if (beforeinter)
             {
-                cout<<"Making Patch"<<endl;
-
                 MatFBRuby.Apply();
                 beforeinter->Render();
                 MatFBSilver.Apply();
@@ -285,30 +281,21 @@ void GLWidget::paintGL()
                     _r_mesh->Render();
                 if (_b_enabled)
                     _b_mesh->Render();
-				
+
                 MatFBEmerald.Apply();
-                patch.RenderUIsoLines(0);
-                if(patch.GetT())
-                    patch.GetT()->RenderUIsoLines(0);
-                if(patch.GetR())
-                    patch.GetR()->RenderUIsoLines(0);
-                if(patch.GetB())
-                    patch.GetB()->RenderUIsoLines(0);
+                if (_show_u_iso_lines)
+                {
+                    patch.RenderUIsoLines(0);
+                    if(patch.GetT())
+                        patch.GetT()->RenderUIsoLines(0);
+                    if(patch.GetR())
+                        patch.GetR()->RenderUIsoLines(0);
+                    if(patch.GetB())
+                        patch.GetB()->RenderUIsoLines(0);
+                }
 
-            }/*
-            if (afterinter){
-                cout<<"control print"<<endl;
-
-                glEnable(GL_BLEND);
-                glDepthMask(GL_FALSE);
-                glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-                MatFBTurquoise.Apply();
-                afterinter->Render();
-                glDepthMask(GL_TRUE);
-                glDisable(GL_BLEND);
-			}
-			*/
-			if (_show_u_iso_lines)
+            }
+            if (_show_u_iso_lines)
             {
                 patch.RenderUIsoLines(0);
                 if (_t_enabled)
@@ -360,7 +347,19 @@ void GLWidget::paintGL()
             // rendering derivatives
             if (_show_derivatives)
             {
+                /*
+                            if (afterinter){
+                                cout<<"control print"<<endl;
 
+                                glEnable(GL_BLEND);
+                                glDepthMask(GL_FALSE);
+                                glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+                                MatFBTurquoise.Apply();
+                                afterinter->Render();
+                                glDepthMask(GL_TRUE);
+                                glDisable(GL_BLEND);
+                                        }
+                                        */
                 glDisable(GL_LIGHTING);
                 patch.RenderDerivatives();
 
@@ -586,46 +585,11 @@ void GLWidget::makeMesh(){
     patch.GenerateVIsoLines(_v_isoline_count, 30);
     beforeinter = patch.GenerateImage(30 ,30 ,GL_STATIC_DRAW);
     if ( beforeinter){
-        cout<<"UpdatingVBO."<<endl;
         beforeinter->UpdateVertexBufferObjects();
     }
 }
 
 void GLWidget::solveInterpol(){
-    //define an interpolation problem:
-    RowMatrix<GLdouble> uKnotVector(4);
-    //1:create a knot vector in u-direction
-    uKnotVector(0) = 0.0;
-    uKnotVector(1) = 1.0 / 3.0;
-    uKnotVector(2) = 2.0 / 3.0;
-    uKnotVector(3) = 1.0;
-    //2:create a knot vector in v-direction
-    ColumnMatrix<GLdouble> vKnotVector(4);
-    vKnotVector(0)=0.0;
-    vKnotVector(1)=1.0/3.0;
-    vKnotVector(2)=2.0/3.0;
-    vKnotVector(3)=1.0;
-    cout<<"v-u knotvektor filled"<<endl;
-
-    //3:define a matrix of data points, e.g. set them to the original control points
-    Matrix<DCoordinate3> dataPointsToInterpolate(4,4);
-    for (GLuint row = 0;row<4;++row)
-        for (GLuint column = 0;column<4;++column)
-            patch.GetData(row,column,dataPointsToInterpolate(row,column));
-
-    cout << dataPointsToInterpolate << endl;
-    //4:solve the interpolatio nproblem and generate the mesh of the interpolating patch
-
-    if(patch.UpdateDataForInterpolation(uKnotVector,vKnotVector,dataPointsToInterpolate))
-    {
-        cout<<"updatel!!!"<<endl;
-        afterinter=patch.GenerateImage(30,30,GL_STATIC_DRAW);
-        if(afterinter)
-            afterinter->UpdateVertexBufferObjects();
-    }else{
-        cout<<"COULD not update"<<endl;
-    }
-
 }
 
 void GLWidget::toggle_derivatives(bool enabled)
@@ -636,7 +600,6 @@ void GLWidget::toggle_derivatives(bool enabled)
 
 void GLWidget::toggle_t(bool checked)
 {
-    cout<<"Adding top patch."<<endl;
     if (checked)
     {
         DCoordinate3 d_00, d_01, d_02, d_03,
@@ -650,10 +613,10 @@ void GLWidget::toggle_t(bool checked)
         patch.GetData(0, 2, d_12);
         patch.GetData(0, 3, d_13);
 
-        patch.GetData(2, 0, d_30);
-        patch.GetData(2, 1, d_31);
-        patch.GetData(2, 2, d_32);
-        patch.GetData(2, 3, d_33);
+        patch.GetData(2, 0, d_20);
+        patch.GetData(2, 1, d_21);
+        patch.GetData(2, 2, d_22);
+        patch.GetData(2, 3, d_23);
 
 
         ExtendDialog *dialog = new ExtendDialog(
@@ -778,7 +741,6 @@ void GLWidget::toggle_b(bool checked)
         patch.GetData(3, 1, d_21);
         patch.GetData(3, 3, d_23);
 
-
         ExtendDialog *dialog = new ExtendDialog(
                     d_00, d_01, d_02, d_03,
                     d_10, d_11, d_12, d_13,
@@ -839,7 +801,6 @@ void GLWidget::set_iso_u_div_count(int value)
         patch.GetT()->GenerateUIsoLines(_u_isoline_count, 30);
     if (_r_enabled)
         patch.GetR()->GenerateUIsoLines(_u_isoline_count, 30);
-
     if (_b_enabled)
         patch.GetB()->GenerateUIsoLines(_u_isoline_count, 30);
     repaint();

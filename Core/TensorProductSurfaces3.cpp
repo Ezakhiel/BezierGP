@@ -344,39 +344,5 @@ TensorProductSurface3::~TensorProductSurface3()
     DeleteVertexBufferObjectsOfData();
 }
 
-Matrix<DCoordinate3> TensorProductSurface3::GetData(){
-    return _data;
-}
-/*
-template <typename T>
-        RowMatrix<T*>* TensorProductSurface3::GenerateUIsoparametricLines(GLuint fixed_v_count, GLuint u_div_point_count, GLenum usage_flag = GL_STATIC_DRAW) const{
-    // PartialDerivatives pd; CalculatePartialDerivatives(u_i, v_fixed, pd);
-    // pd.point, pd.diff1u
-    PartialDerivatives pd;
 
-    if (u_div_point_count <= 1 || fixed_v_count <= 1)
-        return GL_FALSE;
-
-    GLdouble du = (_u_max - _u_min) / (u_div_point_count - 1);
-    GLdouble dv = (_v_max - _v_min) / (fixed_v_count - 1);
-
-    // uniform subdivision grid in the unit square
-    GLfloat sdu = 1.0f / (u_div_point_count - 1);
-    GLfloat tdv = 1.0f / (fixed_v_count - 1);
-
-    for (int i=0; i< fixed_v_count; ++i)
-    {
-        GLdouble v = _v_min + i * dv;
-        GLfloat t = i * tdv;
-        for (int j=0;j < u_div_point_count; ++j)
-        {
-            GLdouble u = _u_min + j * du;
-            GLfloat s  = j * sdu;
-
-
-
-        }
-    }
-}
-*/
 

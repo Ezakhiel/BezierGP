@@ -265,10 +265,12 @@ GLboolean BicubicBezierPatch::UpdateVertexBufferObjectsOfDerivatives()
     return GL_TRUE;
 }
 
+
+
 GLboolean BicubicBezierPatch::RenderDerivatives()
 {
 
-
+/*
     MatFBEmerald.Apply();
     glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, _vbo_derivatives);
@@ -306,6 +308,9 @@ GLboolean BicubicBezierPatch::RenderDerivatives()
     glDisableClientState(GL_VERTEX_ARRAY);
 	
     return GL_TRUE;
+    */
+
+
 }
 
 BicubicBezierPatch::~BicubicBezierPatch()
@@ -476,4 +481,12 @@ GLvoid BicubicBezierPatch::RenderVIsoLines(GLuint order)
     }
 	
     glEnable(GL_LIGHTING);
+}
+
+GLvoid BicubicBezierPatch::RenderNet()
+{
+    glDisable(GL_LIGHTING);
+    glColor3f(0.0, 0.5, 0.0);
+    glPointSize(5.0);
+    glLineWidth(2.0);
 }
