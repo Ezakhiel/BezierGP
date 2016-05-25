@@ -32,10 +32,6 @@ namespace cagd
         GLboolean VBlendingFunctionValues(GLdouble v_know, RowMatrix<GLdouble>& blending_values) const;
         GLboolean CalculatePartialDerivatives(GLdouble u,GLdouble v, PartialDerivatives& pd) const;
 
-        GLvoid    DeleteVertexBufferObjectsOfData();
-        GLboolean RenderData(GLenum render_mode = GL_LINE_STRIP) const;
-        GLboolean UpdateVertexBufferObjectsOfData(GLenum usage_flag = GL_STATIC_DRAW) ;
-
         GLvoid    DeleteVertexBufferObjectsOfDerivatives();
         GLboolean UpdateVertexBufferObjectsOfDerivatives();
         GLboolean RenderDerivatives();
@@ -60,8 +56,6 @@ namespace cagd
         GLvoid GenerateVIsoLines(GLuint line_count,GLuint div_point_count, GLuint max_order_of_derivates=2, GLenum usage_flag = GL_STATIC_DRAW);
         GLvoid RenderUIsoLines(GLuint order);
         GLvoid RenderVIsoLines(GLuint order);
-
-        GLvoid RenderNet();
 
 
     };

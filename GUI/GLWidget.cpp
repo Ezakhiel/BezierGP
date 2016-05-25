@@ -130,6 +130,7 @@ void GLWidget::initializeGL()
     makeMesh();
     solveInterpol();
 
+
     //_meshes[6] = beforeinter;
     //  _meshes[7] = afterinter;
     //PROJEKT
@@ -347,6 +348,14 @@ void GLWidget::paintGL()
             // rendering derivatives
             if (_show_derivatives)
             {
+                glDisable(GL_LIGHTING);
+
+                glPointSize(5.0);
+                glColor3f(0.5, 0.0, 0.0);
+                patch.RenderData(GL_LINE_LOOP);
+                glColor3f(0.0, 0.0, 0.5);
+                patch.RenderData(GL_POINTS);
+                glEnable(GL_LIGHTING);
                 /*
                             if (afterinter){
                                 cout<<"control print"<<endl;
@@ -360,17 +369,12 @@ void GLWidget::paintGL()
                                 glDisable(GL_BLEND);
                                         }
                                         */
-                glDisable(GL_LIGHTING);
-                patch.RenderDerivatives();
-
                 if (_t_enabled)
-                    patch.GetT()->RenderDerivatives();
+                    patch.GetT()->RenderData();
                 if (_r_enabled)
-                    patch.GetR()->RenderDerivatives();
+                    patch.GetR()->RenderData();
                 if (_b_enabled)
-                    patch.GetB()->RenderDerivatives();
-
-                glEnable(GL_LIGHTING);
+                    patch.GetB()->RenderData();
             }
 
         }
@@ -595,6 +599,10 @@ void GLWidget::solveInterpol(){
 void GLWidget::toggle_derivatives(bool enabled)
 {
     _show_derivatives = enabled;
+    if(!patch.UpdateVertexBufferObjectsOfData())
+        cout<<"ERROR:VBO update fail(GLWidget)!"<<endl;
+    else
+        cout<<"VBO update complete!"<<endl;
     repaint();
 }
 
@@ -613,11 +621,6 @@ void GLWidget::toggle_t(bool checked)
         patch.GetData(0, 2, d_12);
         patch.GetData(0, 3, d_13);
 
-        patch.GetData(2, 0, d_20);
-        patch.GetData(2, 1, d_21);
-        patch.GetData(2, 2, d_22);
-        patch.GetData(2, 3, d_23);
-
 
         ExtendDialog *dialog = new ExtendDialog(
                     d_00, d_01, d_02, d_03,
@@ -630,6 +633,7 @@ void GLWidget::toggle_t(bool checked)
         if (dialog->exec() == QDialog::Accepted)
         {
             Matrix<DCoordinate3> m = dialog->getData();
+            cout<<m<<endl;
             patch.ExtendT(m);
 
             BicubicBezierPatch* t = patch.GetT();

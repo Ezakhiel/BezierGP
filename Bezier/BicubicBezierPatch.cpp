@@ -9,7 +9,6 @@ using namespace cagd;
 
 BicubicBezierPatch::BicubicBezierPatch(): TensorProductSurface3(0.0, 1.0, 0.0, 1.0, 4, 4)
 {
-
 }
 
 GLboolean BicubicBezierPatch::UBlendingFunctionValues(
@@ -100,27 +99,6 @@ GLboolean BicubicBezierPatch::CalculatePartialDerivatives(
         pd.diff1v += aux_d1_v * u_blending_values(row);
     }
 
-    return GL_TRUE;
-}
-
-GLvoid BicubicBezierPatch::DeleteVertexBufferObjectsOfData()
-{
-    if (_vbo_data)
-    {
-        glDeleteBuffers(1, &_vbo_data);
-        _vbo_data = 0;
-    }
-}
-
-GLboolean BicubicBezierPatch::RenderData(GLenum render_mode) const
-{
-	//call renders
-    return GL_TRUE;
-}
-
-GLboolean BicubicBezierPatch::UpdateVertexBufferObjectsOfData(GLenum usage_flag)
-{
-	//updateVBO
     return GL_TRUE;
 }
 
@@ -270,7 +248,7 @@ GLboolean BicubicBezierPatch::UpdateVertexBufferObjectsOfDerivatives()
 GLboolean BicubicBezierPatch::RenderDerivatives()
 {
 
-/*
+
     MatFBEmerald.Apply();
     glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, _vbo_derivatives);
@@ -306,9 +284,9 @@ GLboolean BicubicBezierPatch::RenderDerivatives()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDisableClientState(GL_VERTEX_ARRAY);
-	
+
     return GL_TRUE;
-    */
+
 
 
 }
@@ -481,12 +459,4 @@ GLvoid BicubicBezierPatch::RenderVIsoLines(GLuint order)
     }
 	
     glEnable(GL_LIGHTING);
-}
-
-GLvoid BicubicBezierPatch::RenderNet()
-{
-    glDisable(GL_LIGHTING);
-    glColor3f(0.0, 0.5, 0.0);
-    glPointSize(5.0);
-    glLineWidth(2.0);
 }

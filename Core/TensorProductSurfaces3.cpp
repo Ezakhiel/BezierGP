@@ -1,5 +1,6 @@
 #include "TensorProductSurfaces3.h"
 #include "RealSquareMatrices.h"
+#include <iostream>
 
 using namespace cagd;
 using namespace std;
@@ -327,13 +328,92 @@ GLvoid TensorProductSurface3::DeleteVertexBufferObjectsOfData()
 
 GLboolean TensorProductSurface3::RenderData(GLenum render_mode) const
 {
+    cout<<"Rendering Control net(TENSOR->RenderData)"<<endl;
+    if (!_vbo_data)
+          return GL_FALSE;
+    cout<<"vbo ok"<<endl;
+      if (render_mode != GL_LINE_STRIP && render_mode != GL_LINE_LOOP && render_mode != GL_POINTS)
+          return GL_FALSE;
+cout<<"mode ok"<<endl;
+      glEnableClientState(GL_VERTEX_ARRAY);
+          glBindBuffer(GL_ARRAY_BUFFER, _vbo_data);
+              glVertexPointer(3, GL_FLOAT, 0, (const GLvoid*)0);
 
-    return GL_TRUE;
+              GLuint offset = 0;
+              for (GLuint r = 0; r < _data.GetRowCount(); ++r)
+              {
+                  glDrawArrays(render_mode, offset, _data.GetColumnCount());
+                  offset += _data.GetColumnCount();
+              }
+
+              for (GLuint c = 0; c < _data.GetColumnCount(); ++c)
+              {
+                  glDrawArrays(render_mode, offset, _data.GetRowCount());
+                  offset += _data.GetRowCount();
+              }
+
+          glBindBuffer(GL_ARRAY_BUFFER, 0);
+      glDisableClientState(GL_VERTEX_ARRAY);
+
+      return GL_TRUE;
 }
 
 GLboolean TensorProductSurface3::UpdateVertexBufferObjectsOfData(GLenum usage_flag)
 {
+    if (usage_flag != GL_STREAM_DRAW  && usage_flag != GL_STREAM_READ  && usage_flag != GL_STREAM_COPY
+     && usage_flag != GL_DYNAMIC_DRAW && usage_flag != GL_DYNAMIC_READ && usage_flag != GL_DYNAMIC_COPY
+     && usage_flag != GL_STATIC_DRAW  && usage_flag != GL_STATIC_READ  && usage_flag != GL_STATIC_COPY)
+        return GL_FALSE;
+
     DeleteVertexBufferObjectsOfData();
+
+    glGenBuffers(1, &_vbo_data);
+    if (!_vbo_data)
+        return GL_FALSE;
+
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo_data);
+    glBufferData(GL_ARRAY_BUFFER, 2 * _data.GetRowCount() * _data.GetColumnCount() * 3 * sizeof(GLfloat), 0, usage_flag);
+
+    GLfloat *coordinate = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+    if (!coordinate)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        DeleteVertexBufferObjectsOfData();
+        return GL_FALSE;
+    }
+
+    for (GLuint r = 0; r < _data.GetRowCount(); ++r)
+    {
+        for (GLuint c = 0; c < _data.GetColumnCount(); ++c)
+        {
+            for (GLuint j = 0; j < 3; ++j)
+            {
+                *coordinate = (GLfloat)_data(r, c)[j];
+                ++coordinate;
+            }
+        }
+    }
+
+    for (GLuint c = 0; c < _data.GetColumnCount(); ++c)
+    {
+        for (GLuint r = 0; r < _data.GetRowCount(); ++r)
+        {
+            for (GLuint j = 0; j < 3; ++j)
+            {
+                *coordinate = (GLfloat)_data(r, c)[j];
+                ++coordinate;
+            }
+        }
+    }
+
+    if (!glUnmapBuffer(GL_ARRAY_BUFFER))
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        DeleteVertexBufferObjectsOfData();
+        return GL_FALSE;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return GL_TRUE;
 }
