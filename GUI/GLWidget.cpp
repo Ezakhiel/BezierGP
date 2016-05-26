@@ -351,30 +351,30 @@ void GLWidget::paintGL()
                 glDisable(GL_LIGHTING);
 
                 glPointSize(5.0);
-                glColor3f(0.5, 0.0, 0.0);
-                patch.RenderData(GL_LINE_LOOP);
                 glColor3f(0.0, 0.0, 0.5);
+                patch.RenderData(GL_LINE_LOOP);
+                glColor3f(0.0, 0.5, 0.0);
                 patch.RenderData(GL_POINTS);
-                glEnable(GL_LIGHTING);
-                /*
-                            if (afterinter){
-                                cout<<"control print"<<endl;
 
-                                glEnable(GL_BLEND);
-                                glDepthMask(GL_FALSE);
-                                glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-                                MatFBTurquoise.Apply();
-                                afterinter->Render();
-                                glDepthMask(GL_TRUE);
-                                glDisable(GL_BLEND);
-                                        }
-                                        */
-                if (_t_enabled)
-                    patch.GetT()->RenderData();
-                if (_r_enabled)
-                    patch.GetR()->RenderData();
-                if (_b_enabled)
-                    patch.GetB()->RenderData();
+                if (_t_enabled){
+                    glColor3f(0.0, 0.0, 0.5);
+                    patch.GetT()->RenderData(GL_LINE_LOOP);
+                    glColor3f(0.0, 0.5, 0.0);
+                    patch.GetT()->RenderData(GL_POINTS);
+                }
+                if (_r_enabled){
+                    glColor3f(0.0, 0.0, 0.5);
+                    patch.GetR()->RenderData(GL_LINE_LOOP);
+                    glColor3f(0.0, 0.5, 0.0);
+                    patch.GetT()->RenderData(GL_POINTS);
+                }
+                if (_b_enabled){
+                    glColor3f(0.0, 0.0, 0.5);
+                    patch.GetB()->RenderData(GL_LINE_LOOP);
+                    glColor3f(0.0, 0.5, 0.0);
+                    patch.GetT()->RenderData(GL_POINTS);
+                }
+                glEnable(GL_LIGHTING);
             }
 
         }
@@ -603,6 +603,12 @@ void GLWidget::toggle_derivatives(bool enabled)
         cout<<"ERROR:VBO update fail(GLWidget)!"<<endl;
     else
         cout<<"VBO update complete!"<<endl;
+    if (_t_enabled)
+        patch.GetT()->UpdateVertexBufferObjectsOfData();
+    if (_r_enabled)
+        patch.GetR()->UpdateVertexBufferObjectsOfData();
+    if (_b_enabled)
+        patch.GetB()->UpdateVertexBufferObjectsOfData();
     repaint();
 }
 
@@ -619,6 +625,22 @@ void GLWidget::toggle_t(bool checked)
         patch.GetData(0, 1, d_31);
         patch.GetData(0, 2, d_32);
         patch.GetData(0, 3, d_33);
+
+        d_00 = DCoordinate3(-5,-2,0);
+        d_01 = DCoordinate3(-5,-1,0);
+        d_02 = DCoordinate3(-5,1,0);
+        d_03 = DCoordinate3(-5,2,0);
+
+        d_10 = DCoordinate3(-4,-2,0);
+        d_11 = DCoordinate3(-4,-1,2);
+        d_12 = DCoordinate3(-4,1,2);
+        d_13 = DCoordinate3(-4,2,0);
+
+        d_20 = DCoordinate3(-3,-2,0);
+        d_21 = DCoordinate3(-3,-1,2);
+        d_22 = DCoordinate3(-3,1,2);
+        d_23 = DCoordinate3(-3,2,0);
+
 
         ExtendDialog *dialog = new ExtendDialog(
                     d_00, d_01, d_02, d_03,
@@ -677,10 +699,22 @@ void GLWidget::toggle_r(bool checked)
         patch.GetData(2, 3, d_20);
         patch.GetData(3, 3, d_30);
 
-       /* patch.GetData(1, 1, d_10);
-        patch.GetData(1, 3, d_12);
-        patch.GetData(3, 1, d_30);
-        patch.GetData(3, 3, d_32);*/
+
+        d_01 = DCoordinate3(-2,3,0);
+        d_02 = DCoordinate3(-2,4,0);
+        d_03 = DCoordinate3(-2,5,0);
+
+        d_11 = DCoordinate3(-1,3,2);
+        d_12 = DCoordinate3(-1,4,2);
+        d_13 = DCoordinate3(-1,5,0);
+
+        d_21 = DCoordinate3(1,3,2);
+        d_22 = DCoordinate3(1,4,2);
+        d_23 = DCoordinate3(1,5,0);
+
+        d_31 = DCoordinate3(2,3,0);
+        d_32 = DCoordinate3(2,4,0);
+        d_33 = DCoordinate3(2,5,0);
 
 
         ExtendDialog *dialog = new ExtendDialog(
@@ -738,6 +772,22 @@ void GLWidget::toggle_b(bool checked)
         patch.GetData(3, 2, d_02);
         patch.GetData(3, 3, d_03);
 
+
+
+        d_10 = DCoordinate3(3,-2,0);
+        d_11 = DCoordinate3(3,-1,2);
+        d_12 = DCoordinate3(3,1,2);
+        d_13 = DCoordinate3(3,2,0);
+
+        d_20 = DCoordinate3(4,-2,0);
+        d_21 = DCoordinate3(4,-1,2);
+        d_22 = DCoordinate3(4,1,2);
+        d_23 = DCoordinate3(4,2,0);
+
+        d_30 = DCoordinate3(5,-2,0);
+        d_31 = DCoordinate3(5,-1,0);
+        d_32 = DCoordinate3(5,1,0);
+        d_33 = DCoordinate3(5,2,0);
 
         ExtendDialog *dialog = new ExtendDialog(
                     d_00, d_01, d_02, d_03,

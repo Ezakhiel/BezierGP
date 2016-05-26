@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
+    <width>506</width>
     <height>211</height>
    </rect>
   </property>
@@ -29,66 +29,184 @@
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
+  <widget class="QLineEdit" name="e_00">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>341</width>
-     <height>131</height>
+     <x>90</x>
+     <y>130</y>
+     <width>80</width>
+     <height>20</height>
     </rect>
    </property>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="e_00"/>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="e_01"/>
-    </item>
-    <item row="0" column="2">
-     <widget class="QLineEdit" name="e_02"/>
-    </item>
-    <item row="0" column="3">
-     <widget class="QLineEdit" name="e_03"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLineEdit" name="e_10"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="e_11"/>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="e_12"/>
-    </item>
-    <item row="1" column="3">
-     <widget class="QLineEdit" name="e_13"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLineEdit" name="e_20"/>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="e_21"/>
-    </item>
-    <item row="2" column="2">
-     <widget class="QLineEdit" name="e_22"/>
-    </item>
-    <item row="2" column="3">
-     <widget class="QLineEdit" name="e_23"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLineEdit" name="e_30"/>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="e_31"/>
-    </item>
-    <item row="3" column="2">
-     <widget class="QLineEdit" name="e_32"/>
-    </item>
-    <item row="3" column="3">
-     <widget class="QLineEdit" name="e_33"/>
-    </item>
-   </layout>
   </widget>
+  <widget class="QLineEdit" name="e_01">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>100</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_02">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>70</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_03">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>40</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_10">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>130</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_11">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>100</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_12">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>70</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_13">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>40</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_20">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>130</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_21">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>100</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_22">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>70</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_23">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>40</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_30">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>130</y>
+     <width>80</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_31">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>100</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_32">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>70</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="e_33">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>40</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <zorder>buttonBox</zorder>
+  <zorder>e_00</zorder>
+  <zorder>e_01</zorder>
+  <zorder>e_02</zorder>
+  <zorder>e_03</zorder>
+  <zorder>e_10</zorder>
+  <zorder>e_11</zorder>
+  <zorder>e_12</zorder>
+  <zorder>e_13</zorder>
+  <zorder>e_20</zorder>
+  <zorder>e_21</zorder>
+  <zorder>e_22</zorder>
+  <zorder>e_23</zorder>
+  <zorder>e_30</zorder>
+  <zorder>e_31</zorder>
+  <zorder>e_32</zorder>
+  <zorder>e_33</zorder>
+  <zorder>e_33</zorder>
  </widget>
  <resources/>
  <connections>

@@ -362,21 +362,21 @@
      <item row="8" column="1">
       <widget class="QCheckBox" name="t_extend_btn">
        <property name="text">
-        <string>TOP</string>
+        <string>LEFT</string>
        </property>
       </widget>
      </item>
      <item row="9" column="1">
       <widget class="QCheckBox" name="r_extend_btn">
        <property name="text">
-        <string>RIGHT</string>
+        <string>TOP</string>
        </property>
       </widget>
      </item>
      <item row="8" column="0">
       <widget class="QCheckBox" name="b_extend_btn">
        <property name="text">
-        <string>BOTTOM</string>
+        <string>RIGHT</string>
        </property>
       </widget>
      </item>
