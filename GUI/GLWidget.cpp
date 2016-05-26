@@ -615,12 +615,10 @@ void GLWidget::toggle_t(bool checked)
                 d_20, d_21, d_22, d_23,
                 d_30, d_31, d_32, d_33;
 
-
-        patch.GetData(0, 0, d_10);
-        patch.GetData(0, 1, d_11);
-        patch.GetData(0, 2, d_12);
-        patch.GetData(0, 3, d_13);
-
+        patch.GetData(0, 0, d_30);
+        patch.GetData(0, 1, d_31);
+        patch.GetData(0, 2, d_32);
+        patch.GetData(0, 3, d_33);
 
         ExtendDialog *dialog = new ExtendDialog(
                     d_00, d_01, d_02, d_03,
@@ -662,7 +660,7 @@ void GLWidget::toggle_t(bool checked)
             repaint();
         }
     }
-}
+}//toggle_t end
 
 void GLWidget::toggle_r(bool checked)
 {
@@ -674,15 +672,15 @@ void GLWidget::toggle_r(bool checked)
                 d_30, d_31, d_32, d_33;
 
 
-        patch.GetData(0, 1, d_00);
-        patch.GetData(0, 3, d_02);
-        patch.GetData(2, 1, d_20);
-        patch.GetData(2, 3, d_22);
+        patch.GetData(0, 3, d_00);
+        patch.GetData(1, 3, d_10);
+        patch.GetData(2, 3, d_20);
+        patch.GetData(3, 3, d_30);
 
-        patch.GetData(1, 1, d_10);
+       /* patch.GetData(1, 1, d_10);
         patch.GetData(1, 3, d_12);
         patch.GetData(3, 1, d_30);
-        patch.GetData(3, 3, d_32);
+        patch.GetData(3, 3, d_32);*/
 
 
         ExtendDialog *dialog = new ExtendDialog(
@@ -735,15 +733,11 @@ void GLWidget::toggle_b(bool checked)
                 d_20, d_21, d_22, d_23,
                 d_30, d_31, d_32, d_33;
 
-        patch.GetData(1, 0, d_00);
-        patch.GetData(1, 2, d_02);
-        patch.GetData(3, 0, d_20);
-        patch.GetData(3, 2, d_22);
+        patch.GetData(3, 0, d_00);
+        patch.GetData(3, 1, d_01);
+        patch.GetData(3, 2, d_02);
+        patch.GetData(3, 3, d_03);
 
-        patch.GetData(1, 1, d_01);
-        patch.GetData(1, 3, d_03);
-        patch.GetData(3, 1, d_21);
-        patch.GetData(3, 3, d_23);
 
         ExtendDialog *dialog = new ExtendDialog(
                     d_00, d_01, d_02, d_03,

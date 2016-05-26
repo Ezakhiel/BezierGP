@@ -213,57 +213,24 @@ ExtendDialog::~ExtendDialog()
 
 void ExtendDialog::setup_t()
 {
-    ui->e_10->setEnabled(false);
-    ui->e_11->setEnabled(false);
-    ui->e_12->setEnabled(false);
-    ui->e_13->setEnabled(false);
-
     ui->e_30->setEnabled(false);
     ui->e_31->setEnabled(false);
     ui->e_32->setEnabled(false);
     ui->e_33->setEnabled(false);
-
-
-    ui->e_00->setText("-1 3 0");
-
-
-    ui->e_01->setText("1 3 0");
-
 }
 
 void ExtendDialog::setup_r()
 {
     ui->e_00->setEnabled(false);
-    ui->e_02->setEnabled(false);
-    ui->e_20->setEnabled(false);
-    ui->e_22->setEnabled(false);
-
     ui->e_10->setEnabled(false);
-    ui->e_12->setEnabled(false);
+    ui->e_20->setEnabled(false);
     ui->e_30->setEnabled(false);
-    ui->e_32->setEnabled(false);
-
-    ui->e_01->setText("3 1 0");
-
-    ui->e_11->setText("3 -1 0");
-
 }
 
 void ExtendDialog::setup_b()
 {
     ui->e_00->setEnabled(false);
-    ui->e_02->setEnabled(false);
-    ui->e_20->setEnabled(false);
-    ui->e_22->setEnabled(false);
-
     ui->e_01->setEnabled(false);
+    ui->e_02->setEnabled(false);
     ui->e_03->setEnabled(false);
-    ui->e_21->setEnabled(false);
-    ui->e_23->setEnabled(false);
-
-    ui->e_11->setText("1 -3 0");
-
-
-    ui->e_10->setText("-1 -3 0");
-
 }
