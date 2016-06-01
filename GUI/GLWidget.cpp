@@ -63,6 +63,8 @@ void GLWidget::initializeGL()
     _angle_x = _angle_y = _angle_z = 0.0;
     _trans_x = _trans_y = _trans_z = 0.0;
 
+
+
     // initializing the OpenGL Extension Wrangler library
     glewInit();
 
@@ -72,6 +74,25 @@ void GLWidget::initializeGL()
     Color4          diffuse(0.8,0.8,0.8,1.0);
     Color4          specular(1.0,1.0,1.0,1.0);
     dl = new DirectionalLight(GL_LIGHT0, direction, ambient, diffuse, specular);
+
+
+    try
+    {
+        // directional ligth
+        if (!_shader.InstallShaders("Shaders/directional_light.vert",
+                                    "Shaders/directional_light.frag",
+                                    GL_TRUE))
+        {
+            QMessageBox::critical(this, "Shader error",
+                                  "Error installing shaders");
+        }
+    }
+    catch (Exception &e)
+    {
+        cout<<"SHADER ERRRROR !!!!!!!!!!!!!!!"<<endl;
+    }
+
+
     //if(dl)
     //    delete dl, dl=0;
     // init surfaces
@@ -128,7 +149,8 @@ void GLWidget::initializeGL()
 
     setControl();
     makeMesh();
-    solveInterpol();
+
+    //solveInterpol();
 
 
     //_meshes[6] = beforeinter;
@@ -266,24 +288,41 @@ void GLWidget::paintGL()
         if(dl)
         {
             dl->Enable();
+            _shader.Enable(GL_TRUE);
             // cout <<"surface_index:"<<_surface_index<<endl;
         }	
         if (_surface_index >= 7)
         {
+            if (_surface_index == 8){
+                if (afterinter){
+                    cout<<"inter rednder"<<endl;
+                    glEnable(GL_BLEND);
+                    glDepthMask(GL_FALSE);
+                    glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+                    MatFBTurquoise.Apply();
+                    afterinter->Render();
+                    glDepthMask(GL_TRUE);
+                    glDisable(GL_BLEND);
+                }
+            }
             if (beforeinter)
             {
                 MatFBRuby.Apply();
                 beforeinter->Render();
-                MatFBSilver.Apply();
 
-                if (_t_enabled)
+                if (_t_enabled){
+                    MatFBSilver.Apply();
                     _t_mesh->Render();
-                if (_r_enabled)
+                }
+                if (_r_enabled){
+                    MatFBEmerald.Apply();
                     _r_mesh->Render();
-                if (_b_enabled)
+                }
+                if (_b_enabled){
+                    MatFBBrass.Apply();
                     _b_mesh->Render();
+                }
 
-                MatFBEmerald.Apply();
                 if (_show_u_iso_lines)
                 {
                     patch.RenderUIsoLines(0);
@@ -319,8 +358,6 @@ void GLWidget::paintGL()
                     patch.GetB()->RenderVIsoLines(0);
             }
 
-            MatFBBrass.Apply();
-
             if (_show_u_iso_derivates)
             {
                 patch.RenderUIsoLines(1);
@@ -345,7 +382,7 @@ void GLWidget::paintGL()
                     patch.GetB()->RenderVIsoLines(1);
             }
 
-            // rendering derivatives
+            // rendering control net
             if (_show_derivatives)
             {
                 glDisable(GL_LIGHTING);
@@ -356,19 +393,19 @@ void GLWidget::paintGL()
                 glColor3f(0.0, 0.5, 0.0);
                 patch.RenderData(GL_POINTS);
 
-                if (_t_enabled){
+                if (_t_enabled){ // right
                     glColor3f(0.0, 0.0, 0.5);
                     patch.GetT()->RenderData(GL_LINE_LOOP);
                     glColor3f(0.0, 0.5, 0.0);
                     patch.GetT()->RenderData(GL_POINTS);
                 }
-                if (_r_enabled){
+                if (_r_enabled){ // top
                     glColor3f(0.0, 0.0, 0.5);
                     patch.GetR()->RenderData(GL_LINE_LOOP);
                     glColor3f(0.0, 0.5, 0.0);
                     patch.GetT()->RenderData(GL_POINTS);
                 }
-                if (_b_enabled){
+                if (_b_enabled){ // left
                     glColor3f(0.0, 0.0, 0.5);
                     patch.GetB()->RenderData(GL_LINE_LOOP);
                     glColor3f(0.0, 0.5, 0.0);
@@ -383,7 +420,7 @@ void GLWidget::paintGL()
             _meshes[_surface_index-1]->Render();
         }
         dl->Disable();
-
+        _shader.Disable();
     }
 
 
@@ -594,6 +631,32 @@ void GLWidget::makeMesh(){
 }
 
 void GLWidget::solveInterpol(){
+    //define an interpolation problem:
+    RowMatrix<GLdouble> uKnotVector(4);
+    //1:create a knot vector in u-direction
+    uKnotVector(0) = 0.0;
+    uKnotVector(1) = 1.0 / 3.0;
+    uKnotVector(2) = 2.0 / 3.0;
+    uKnotVector(3) = 1.0;
+    //2:create a knot vector in v-direction
+    ColumnMatrix<GLdouble> vKnotVector(4);
+    vKnotVector(0)=0.0;
+    vKnotVector(1)=1.0/3.0;
+    vKnotVector(2)=2.0/3.0;
+    vKnotVector(3)=1.0;
+    //3:define a matrix of data points, e.g. set them to the original control points
+    Matrix<DCoordinate3> dataPointsToInterpolate(4,4);
+    for (GLuint row = 0;row<4;++row)
+        for (GLuint column = 0;column<4;++column)
+            patch.GetData(row,column,dataPointsToInterpolate(row,column));
+    //4:solve the interpolatio nproblem and generate the mesh of the interpolating patch
+
+    if(patch.UpdateDataForInterpolation(uKnotVector,vKnotVector,dataPointsToInterpolate))
+    {
+        afterinter=patch.GenerateImage(30,30,GL_STATIC_DRAW);
+        if(afterinter)
+            afterinter->UpdateVertexBufferObjects();
+    }
 }
 
 void GLWidget::toggle_derivatives(bool enabled)
@@ -617,14 +680,24 @@ void GLWidget::toggle_t(bool checked)
     if (checked)
     {
         DCoordinate3 d_00, d_01, d_02, d_03,
-                d_10, d_11, d_12, d_13,
-                d_20, d_21, d_22, d_23,
-                d_30, d_31, d_32, d_33;
+        d_10, d_11, d_12, d_13,
+        d_20, d_21, d_22, d_23,
+        d_30, d_31, d_32, d_33;
 
         patch.GetData(0, 0, d_30);
         patch.GetData(0, 1, d_31);
         patch.GetData(0, 2, d_32);
         patch.GetData(0, 3, d_33);
+
+        patch.GetData(1, 0, d_20);
+        patch.GetData(1, 1, d_21);
+        patch.GetData(1, 2, d_22);
+        patch.GetData(1, 3, d_23);
+
+        d_20 = 2*d_30-d_20;
+        d_21 = 2*d_31-d_21;
+        d_22 = 2*d_32-d_22;
+        d_23 = 2*d_33-d_23;
 
         d_00 = DCoordinate3(-5,-2,0);
         d_01 = DCoordinate3(-5,-1,0);
@@ -636,17 +709,18 @@ void GLWidget::toggle_t(bool checked)
         d_12 = DCoordinate3(-4,1,2);
         d_13 = DCoordinate3(-4,2,0);
 
+        /*
         d_20 = DCoordinate3(-3,-2,0);
         d_21 = DCoordinate3(-3,-1,2);
         d_22 = DCoordinate3(-3,1,2);
         d_23 = DCoordinate3(-3,2,0);
-
+*/
 
         ExtendDialog *dialog = new ExtendDialog(
-                    d_00, d_01, d_02, d_03,
-                    d_10, d_11, d_12, d_13,
-                    d_20, d_21, d_22, d_23,
-                    d_30, d_31, d_32, d_33);
+                d_00, d_01, d_02, d_03,
+                d_10, d_11, d_12, d_13,
+                d_20, d_21, d_22, d_23,
+                d_30, d_31, d_32, d_33);
 
         dialog->setup_t();
 
@@ -689,9 +763,9 @@ void GLWidget::toggle_r(bool checked)
     if (checked)
     {
         DCoordinate3 d_00, d_01, d_02, d_03,
-                d_10, d_11, d_12, d_13,
-                d_20, d_21, d_22, d_23,
-                d_30, d_31, d_32, d_33;
+        d_10, d_11, d_12, d_13,
+        d_20, d_21, d_22, d_23,
+        d_30, d_31, d_32, d_33;
 
 
         patch.GetData(0, 3, d_00);
@@ -699,29 +773,39 @@ void GLWidget::toggle_r(bool checked)
         patch.GetData(2, 3, d_20);
         patch.GetData(3, 3, d_30);
 
+        patch.GetData(0, 2, d_01);
+        patch.GetData(1, 2, d_11);
+        patch.GetData(2, 2, d_21);
+        patch.GetData(3, 2, d_31);
 
-        d_01 = DCoordinate3(-2,3,0);
+        d_01 = 2*d_00-d_01;
+        d_11 = 2*d_10-d_11;
+        d_21 = 2*d_20-d_21;
+        d_31 = 2*d_30-d_31;
+
+
+        //d_01 = DCoordinate3(-2,3,0);
         d_02 = DCoordinate3(-2,4,0);
         d_03 = DCoordinate3(-2,5,0);
 
-        d_11 = DCoordinate3(-1,3,2);
+        // d_11 = DCoordinate3(-1,3,2);
         d_12 = DCoordinate3(-1,4,2);
         d_13 = DCoordinate3(-1,5,0);
 
-        d_21 = DCoordinate3(1,3,2);
+        //d_21 = DCoordinate3(1,3,2);
         d_22 = DCoordinate3(1,4,2);
         d_23 = DCoordinate3(1,5,0);
 
-        d_31 = DCoordinate3(2,3,0);
+        //d_31 = DCoordinate3(2,3,0);
         d_32 = DCoordinate3(2,4,0);
         d_33 = DCoordinate3(2,5,0);
 
 
         ExtendDialog *dialog = new ExtendDialog(
-                    d_00, d_01, d_02, d_03,
-                    d_10, d_11, d_12, d_13,
-                    d_20, d_21, d_22, d_23,
-                    d_30, d_31, d_32, d_33);
+                d_00, d_01, d_02, d_03,
+                d_10, d_11, d_12, d_13,
+                d_20, d_21, d_22, d_23,
+                d_30, d_31, d_32, d_33);
 
         dialog->setup_r();
 
@@ -763,21 +847,29 @@ void GLWidget::toggle_b(bool checked)
     if (checked)
     {
         DCoordinate3 d_00, d_01, d_02, d_03,
-                d_10, d_11, d_12, d_13,
-                d_20, d_21, d_22, d_23,
-                d_30, d_31, d_32, d_33;
+        d_10, d_11, d_12, d_13,
+        d_20, d_21, d_22, d_23,
+        d_30, d_31, d_32, d_33;
 
         patch.GetData(3, 0, d_00);
         patch.GetData(3, 1, d_01);
         patch.GetData(3, 2, d_02);
         patch.GetData(3, 3, d_03);
 
+        patch.GetData(2, 0, d_10);
+        patch.GetData(2, 1, d_11);
+        patch.GetData(2, 2, d_12);
+        patch.GetData(2, 3, d_13);
 
+        d_10 = 2*d_00-d_10;
+        d_11 = 2*d_01-d_11;
+        d_12 = 2*d_02-d_12;
+        d_13 = 2*d_03-d_13;
 
-        d_10 = DCoordinate3(3,-2,0);
-        d_11 = DCoordinate3(3,-1,2);
-        d_12 = DCoordinate3(3,1,2);
-        d_13 = DCoordinate3(3,2,0);
+        // d_10 = DCoordinate3(3,-2,0);
+        // d_11 = DCoordinate3(3,-1,2);
+        //d_12 = DCoordinate3(3,1,2);
+        //d_13 = DCoordinate3(3,2,0);
 
         d_20 = DCoordinate3(4,-2,0);
         d_21 = DCoordinate3(4,-1,2);
@@ -790,10 +882,10 @@ void GLWidget::toggle_b(bool checked)
         d_33 = DCoordinate3(5,2,0);
 
         ExtendDialog *dialog = new ExtendDialog(
-                    d_00, d_01, d_02, d_03,
-                    d_10, d_11, d_12, d_13,
-                    d_20, d_21, d_22, d_23,
-                    d_30, d_31, d_32, d_33);
+                d_00, d_01, d_02, d_03,
+                d_10, d_11, d_12, d_13,
+                d_20, d_21, d_22, d_23,
+                d_30, d_31, d_32, d_33);
 
         dialog->setup_b();
 

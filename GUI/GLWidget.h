@@ -18,6 +18,9 @@
 #include "../Core/CyclicCurves3.h"
 #include "../Bezier/BicubicBezierPatch.h"
 #include "../Bezier/BicubicBezierIsoLine.h"
+#include "../Shader/ShaderPrograms.h"
+#include "../Core/Exceptions.h"
+
 
 class GLWidget: public QGLWidget
 {
@@ -51,6 +54,7 @@ private:
     std::vector<cagd::TriangulatedMesh3*> _meshes;
 
     cagd::DirectionalLight *dl;
+    cagd::ShaderProgram _shader;
 
     //PROJECT
 
@@ -93,6 +97,7 @@ public:
     void setControl();
     void makeMesh();
     void solveInterpol();
+    void set_shader(int index);
 
 public slots:
     // public event handling methods/slots

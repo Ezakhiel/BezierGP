@@ -217,6 +217,11 @@ void ExtendDialog::setup_t()
     ui->e_31->setEnabled(false);
     ui->e_32->setEnabled(false);
     ui->e_33->setEnabled(false);
+
+    ui->e_20->setEnabled(false);
+    ui->e_21->setEnabled(false);
+    ui->e_22->setEnabled(false);
+    ui->e_23->setEnabled(false);
 }
 
 void ExtendDialog::setup_r()
@@ -225,6 +230,11 @@ void ExtendDialog::setup_r()
     ui->e_10->setEnabled(false);
     ui->e_20->setEnabled(false);
     ui->e_30->setEnabled(false);
+
+    ui->e_01->setEnabled(false);
+    ui->e_11->setEnabled(false);
+    ui->e_21->setEnabled(false);
+    ui->e_31->setEnabled(false);
 }
 
 void ExtendDialog::setup_b()
@@ -233,4 +243,9 @@ void ExtendDialog::setup_b()
     ui->e_01->setEnabled(false);
     ui->e_02->setEnabled(false);
     ui->e_03->setEnabled(false);
+
+    ui->e_10->setEnabled(false);
+    ui->e_11->setEnabled(false);
+    ui->e_12->setEnabled(false);
+    ui->e_13->setEnabled(false);
 }
